@@ -1,7 +1,8 @@
 # GRAPHQL BLOG EXAMPLE
 
-npm install
-npm start
+- npm install
+- npm start
+- go to *localhost:4000/graphql*
 
 ## Queries
 

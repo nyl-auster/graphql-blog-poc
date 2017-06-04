@@ -40,6 +40,7 @@ class blogService {
   getTagsByIds(ids) {
     return  ids.map((id) => this.getTagById(id)).slice()
   }
+
 }
 
 module.exports = new blogService(store)
