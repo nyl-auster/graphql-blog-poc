@@ -1,3 +1,6 @@
+/**
+ * Generate a graphql schema
+ */
 const graphql = require('graphql')
 const _ = require('lodash')
 

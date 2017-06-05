@@ -1,5 +1,4 @@
 const graphql = require('graphql')
-const blogService = require('../services/blogService')
 const PostService = require('../services/PostService')
 const tagGraphQL = require('./tagGraphQL')
 
@@ -25,12 +24,12 @@ module.exports.types = {
 module.exports.queryFields = {
   post: {
     type: exports.types.postType,
-    description: "Return a single blog post by its ids",
+    description: "Return a single post by its slug",
     args: {
-      id: { type: graphql.GraphQLString }
+      slug: { type: graphql.GraphQLString }
     },
-    resolve: function (obj, {id}) {
-      return PostService.getOne(id)
+    resolve: function (obj, {slug}) {
+      return PostService.getOneById(slug)
     }
   },
   posts: {
@@ -39,7 +38,8 @@ module.exports.queryFields = {
     resolve: function(obj) {
       return PostService.getAll()
     }
-  },
+  }
+  /*
   postsByTagId: {
     type: new graphql.GraphQLList(exports.types.postType),
     args: {
@@ -53,4 +53,5 @@ module.exports.queryFields = {
       })
     }
   }
+  */
 }

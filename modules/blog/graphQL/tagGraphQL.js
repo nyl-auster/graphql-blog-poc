@@ -1,5 +1,5 @@
 const graphql = require('graphql')
-const blogService = require('../services/blogService')
+const TagService = require('../services/TagService')
 
 // expose new type
 module.exports.types = {
@@ -17,18 +17,19 @@ module.exports.types = {
 module.exports.queryFields = {
   tag: {
     type: exports.types.tagType,
+    description: "Return a single tag by its slug",
     args: {
-      id: { type: graphql.GraphQLString }
+      slug: { type: graphql.GraphQLString }
     },
-    resolve: function(obj, {id}) {
-      return blogService.getTagById(id)
+    resolve: function(obj, {slug}) {
+      return TagService.getOneBySlug(slug)
     }
   },
   tags: {
     type: new graphql.GraphQLList(exports.types.tagType),
     description: "Return a list of tags",
     resolve: function(obj) {
-      return blogService.getAllTags()
+      return TagService.getAll()
     }
   }
 }

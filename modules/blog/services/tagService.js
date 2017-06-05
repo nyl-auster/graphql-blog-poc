@@ -2,13 +2,12 @@
 * API pour récupérer les données dans la base de données
 */
 const mongoose = require('mongoose')
-const postSchema = require('../mongoose/postSchema')
-const TagService = require('./tagService')
+const postSchema = require('../mongoose/tagSchema')
 
-class PostService {
+class TagService {
 
   constructor() {
-    this.model = mongoose.model('Post', postSchema)
+    this.model = mongoose.model('Tag', postSchema)
   }
 
   getAll(filters = {}) {
@@ -33,4 +32,4 @@ class PostService {
 
 }
 
-module.exports = new PostService()
+module.exports = new TagService()
