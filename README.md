@@ -14,11 +14,6 @@ Get all the posts with their tags
     id
     title
     content
-    tags {
-      id
-      name
-      slug
-    }
   }
 }
 ```
@@ -31,22 +26,6 @@ Get all the tags
     id
     slug
     name
-  }
-}
-```
-
-Get post related to a specific tag
-```
-{
-  postsByTagId(tagId:"a"){
-    title
-    content
-    id
-    tags {
-      id
-      name
-      slug
-    }
   }
 }
 ```
