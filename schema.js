@@ -1,90 +1,28 @@
 const graphql = require('graphql')
 const _ = require('lodash')
-const blogService = require('./blogService')
 
-/*=================================
-DECLARATION DES TYPES GRAPHQL
-==================================*/
+const schemasPaths = [
+  './modules/blog/graphQL/postGraphQL',
+  './modules/blog/graphQL/tagGraphQL'
+]
 
-var tagType = new graphql.GraphQLObjectType({
-  name: 'Tag',
-  fields: {
-    id: { type: graphql.GraphQLString },
-    name: { type: graphql.GraphQLString },
-    slug: { type: graphql.GraphQLString }
+function collectSchemaQueryFields(schemas) {
+  let queryFields = {}
+  for (const filepath of schemas) {
+    console.log(filepath)
+    let schemaFragment = require(filepath)
+    for (const property in schemaFragment.queryFields) {
+      queryFields[property] = schemaFragment.queryFields[property]
+    }
   }
-});
-
-// Définir ntore modèle de Post
-var postType = new graphql.GraphQLObjectType({
-  name: 'Post',
-  fields: {
-    id: { type: graphql.GraphQLString },
-    title: { type: graphql.GraphQLString },
-    content: { type: graphql.GraphQLString },
-    tags: {type: new graphql.GraphQLList(tagType)}
-  }
-});
-
-/*=========================
-GRAPHQL SCHEMA
-=========================*/
+  return queryFields
+}
 
 // Entry points : les "resolvers"
 var queryType = new graphql.GraphQLObjectType({
   name: 'Query',
   // les clefs de "fields" sont les points d'entrée pour notre API en http GET
-  fields: {
-    post: {
-      type: postType,
-      description: "Return a single blog post by its ids",
-      args: {
-        id: { type: graphql.GraphQLString }
-      },
-      resolve: function (obj, {id}) {
-        return blogService.getPostById(id)
-      }
-    },
-    posts: {
-      type: new graphql.GraphQLList(postType),
-      description: "Return a list of posts",
-      resolve: function(obj) {
-        return blogService.getAllPosts().map(post => {
-          post.tags = blogService.getTagsByIds(post.tagsIds)
-          return post
-        })
-      }
-    },
-    postsByTagId: {
-      type: new graphql.GraphQLList(postType),
-      args: {
-        tagId: { type: graphql.GraphQLString }
-      },
-      description: "Return a list of post for a specific tag",
-      resolve: function(obj, {tagId}) {
-        return blogService.getPostsByTagId().map(post => {
-          post.tags = blogService.getTagsByIds(post.tagsIds)
-          return post
-        })
-      }
-    },
-    tag: {
-      type: tagType,
-      args: {
-        id: { type: graphql.GraphQLString }
-      },
-      resolve: function(obj, {id}) {
-        return blogService.getTagById(id)
-      }
-    },
-    tags: {
-      type: new graphql.GraphQLList(tagType),
-      description: "Return a list of tags",
-      resolve: function(obj) {
-        return blogService.getAllTags()
-      }
-    },
-  }
+  fields: collectSchemaQueryFields(schemasPaths)
 });
 
 module.exports = new graphql.GraphQLSchema({

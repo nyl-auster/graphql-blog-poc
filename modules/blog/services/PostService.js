@@ -14,12 +14,16 @@ class PostService {
     return this.postModel.find(filters)
   }
 
-  getOne(filters) {
-    return this.postModel.findOne(filters)
+  getOne(id) {
+    return this.postModel.findOne({_id: id})
   }
 
   create(values) {
     return new this.postModel(values).save()
+  }
+
+  update(document) {
+    return this.postModel.update(document)
   }
 
 }

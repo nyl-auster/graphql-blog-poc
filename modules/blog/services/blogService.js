@@ -1,7 +1,7 @@
 /**
  * API pour récupérer les données dans la base de données
  */
-const store = require('./database')
+const store = require('../../../database')
 const _ = require('lodash')
 
 class blogService {
