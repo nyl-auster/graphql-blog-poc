@@ -14,12 +14,16 @@ class App {
     this.server = express()
   }
 
-  config() {
+  getTime() {
+    return this.time;
+  }
+
+  config(key) {
     let envConfig = {}
     const env = process.env.NODE_ENV
     const config = require('./config.json')
     _.merge(envConfig, config['*'], config[env])
-    return envConfig
+    return envConfig[key]
   }
 
   async start() {
@@ -38,7 +42,7 @@ class App {
     let queryFields = {}
     for (const moduleId in modules) {
       for (let filepath of modules[moduleId].plugins.graphQL) {
-        filepath = ['.', this.modulesPath, moduleId, filepath].join('/')
+        filepath = ['.', this.config("modulesPath"), moduleId, filepath].join('/')
         let schemaFragment = require(filepath)
         for (const property in schemaFragment.queryFields) {
           queryFields[property] = schemaFragment.queryFields[property]
@@ -63,7 +67,7 @@ class App {
   startDatabase() {
     console.log("connecting to mongoDB database ... ")
     mongoose.Promise = global.Promise
-    return mongoose.connect('mongodb://localhost/yineo').then(() => {
+    return mongoose.connect(this.config('mongodb_uri')).then(() => {
       console.log("connected successfully to 'mongodb://localhost/yineo' ! ")
     }).catch((e) => {
       console.log(e)
@@ -82,7 +86,7 @@ class App {
 
   async discoverModules(callback) {
     const modules = {}
-    const items = await fse.readdir(this.modulesPath)
+    const items = await fse.readdir(this.config("modulesPath"))
     for (var i=0; i<items.length; i++) {
       const modulePath = "./modules/" + items[i]
       const module = require(modulePath)
