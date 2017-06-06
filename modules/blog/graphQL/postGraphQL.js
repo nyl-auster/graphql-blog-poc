@@ -5,7 +5,7 @@ const tagGraphQL = require('./tagGraphQL')
 /**
  * Expose graphQL types
  */
-module.exports.types = {
+exports.types = {
   postType : new graphql.GraphQLObjectType({
     name: 'Post',
     fields: {
@@ -21,7 +21,7 @@ module.exports.types = {
 /**
  * Expose new graphQL queryFields
  */
-module.exports.queryFields = {
+exports.queryFields = {
   post: {
     type: exports.types.postType,
     description: "Return a single post by its slug",

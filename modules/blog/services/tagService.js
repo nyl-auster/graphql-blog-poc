@@ -1,6 +1,3 @@
-/**
-* API pour récupérer les données dans la base de données
-*/
 const mongoose = require('mongoose')
 const postSchema = require('../mongoose/tagSchema')
 

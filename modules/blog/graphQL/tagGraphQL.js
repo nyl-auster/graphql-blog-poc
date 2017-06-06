@@ -2,7 +2,7 @@ const graphql = require('graphql')
 const TagService = require('../services/TagService')
 
 // expose new type
-module.exports.types = {
+exports.types = {
   tagType : new graphql.GraphQLObjectType({
     name: 'Tag',
     fields: {
@@ -14,7 +14,7 @@ module.exports.types = {
 }
 
 // expose new query fields
-module.exports.queryFields = {
+exports.queryFields = {
   tag: {
     type: exports.types.tagType,
     description: "Return a single tag by its slug",
