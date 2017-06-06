@@ -1,11 +1,11 @@
-import {
+const {
   graphql,
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
   GraphQLList
-} from 'graphql'
-import TagService from '../services/TagService'
+} = require('graphql')
+const TagService = require('../services/TagService')
 
 // expose new type
 exports.types = {

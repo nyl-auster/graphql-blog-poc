@@ -1,17 +1,17 @@
-import {
+const {
   graphql,
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
   GraphQLList
-} from 'graphql'
-import PostService from '../services/PostService'
-import tagGraphQL from './tagGraphQL'
+} = require('graphql')
+const PostService = require('../services/PostService')
+const tagGraphQL = require('./tagGraphQL')
 
 /**
  * Expose graphQL types
  */
-exports.types = {
+module.exports.types = {
   postType : new GraphQLObjectType({
     name: 'Post',
     fields: {
@@ -29,7 +29,7 @@ exports.types = {
  */
 module.exports.queryFields = {
   post: {
-    type: exports.types.postType,
+    type: module.exports.types.postType,
     description: "Return a single post by its slug",
     args: {
       slug: { type: GraphQLString }
@@ -39,7 +39,7 @@ module.exports.queryFields = {
     }
   },
   posts: {
-    type: new GraphQLList(exports.types.postType),
+    type: new GraphQLList(module.exports.types.postType),
     description: "Return a list of posts",
     resolve: function(obj) {
       return PostService.getAll()

@@ -1,14 +1,13 @@
-import express from 'express'
-import schema from './schema'
-import graphqlHTTP from 'express-graphql'
-import mongoose from 'mongoose'
-
+const express = require('express')
+const graphqlHTTP = require('express-graphql')
+const mongoose = require('mongoose')
 const fse = require('fs-extra');
+const graphql = require('graphql')
 
 class App {
 
   constructor() {
-    this.modulesPath = "src/modules"
+    this.modulesPath = "modules"
     this.modules = []
     this.graphQLSchema = {}
     this.server = express()
@@ -21,18 +20,47 @@ class App {
       this.modules = modules
       return this.buildGraphQLSchemaFromModules(modules)
     })
-    .then((graphQLSchema) => {
+    .then(graphQLSchema => {
       this.graphQLSchema = graphQLSchema
       return this.startDatabase()
     })
     .then(() => {
       return this.startServer()
     })
-    .catch((e) => console.log(e))
+    .catch(e => console.log(e))
   }
 
+  /**
+  * Collect graphQL schema definition from modules
+  * to create a graphQL schema
+  */
   buildGraphQLSchemaFromModules(modules) {
-    return require('./schema.js')
+
+    // collect query fields from modules
+    let queryFields = {}
+    for (const moduleId in modules) {
+      for (let filepath of modules[moduleId].plugins.graphQL) {
+        filepath = ['.', this.modulesPath, moduleId, filepath].join('/')
+        console.log(filepath)
+        let schemaFragment = require(filepath)
+        for (const property in schemaFragment.queryFields) {
+          queryFields[property] = schemaFragment.queryFields[property]
+        }
+      }
+    }
+
+    // Entry points : les "resolvers"
+    const queryType = new graphql.GraphQLObjectType({
+      name: 'Query',
+      // les clefs de "fields" sont les points d'entrée pour notre API en http GET
+      fields: queryFields
+    });
+
+    const schema = new graphql.GraphQLSchema({
+      query: queryType
+    })
+
+    return schema
   }
 
   startDatabase() {

@@ -1,5 +1,5 @@
 /**
  * Boostrap app as soon as we are connected to database
  */
-import App from './app'
+const App = require('./app')
 App.start()
