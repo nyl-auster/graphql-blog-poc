@@ -1,7 +1,7 @@
 # GRAPHQL BLOG EXAMPLE
 
-- npm install
-- npm start
+- yarn install
+- yarn dev
 - go to *localhost:4000/graphql*
 
 ## Queries
