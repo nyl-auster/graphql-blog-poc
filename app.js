@@ -3,6 +3,8 @@ const graphqlHTTP = require('express-graphql')
 const mongoose = require('mongoose')
 const fse = require('fs-extra');
 const graphql = require('graphql')
+const config = require('./config.json')[process.env.NODE_ENV || 'dev'];
+console.log(config)
 
 class App {
 
@@ -41,7 +43,6 @@ class App {
     for (const moduleId in modules) {
       for (let filepath of modules[moduleId].plugins.graphQL) {
         filepath = ['.', this.modulesPath, moduleId, filepath].join('/')
-        console.log(filepath)
         let schemaFragment = require(filepath)
         for (const property in schemaFragment.queryFields) {
           queryFields[property] = schemaFragment.queryFields[property]

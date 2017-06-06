@@ -1,0 +1,8 @@
+{
+  "dev": {
+    "mongodb_uri": "mongodb://localhost/yineo",
+  },
+  "prod": {
+    "mongodb_uri": "mongodb://localhost/yineo",
+  }
+}
