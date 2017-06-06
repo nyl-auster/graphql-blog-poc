@@ -22,21 +22,11 @@ class App {
     return envConfig
   }
 
-  // run application
-  start() {
-    this.discoverModules()
-    .then(modules => {
-      this.modules = modules
-      return this.buildGraphQLSchemaFromModules(modules)
-    })
-    .then(graphQLSchema => {
-      this.graphQLSchema = graphQLSchema
-      return this.startDatabase()
-    })
-    .then(() => {
-      return this.startServer()
-    })
-    .catch(e => console.log(e))
+  async start() {
+    this.modules = await this.discoverModules()
+    this.graphQLSchema = this.buildGraphQLSchemaFromModules(this.modules)
+    await this.startDatabase()
+    this.startServer(this.graphQLSchema)
   }
 
   /**
@@ -71,30 +61,35 @@ class App {
   }
 
   startDatabase() {
+    console.log("connecting to mongoDB database ... ")
     mongoose.Promise = global.Promise
-    return mongoose.connect('mongodb://localhost/yineo')
+    return mongoose.connect('mongodb://localhost/yineo').then(() => {
+      console.log("connected successfully to 'mongodb://localhost/yineo' ! ")
+    }).catch((e) => {
+      console.log(e)
+    })
   }
 
-  startServer() {
+  startServer(graphQLSchema) {
     this.server.use('/graphql', graphqlHTTP({
-      schema: this.graphQLSchema,
+      schema: graphQLSchema,
       rootValue: global,
       graphiql: true,
     }))
     this.server.listen(4000);
+    console.log("Http server now listening ")
   }
 
-  discoverModules(callback) {
+  async discoverModules(callback) {
     const modules = {}
-    return fse.readdir(this.modulesPath).then((items)  => {
-      for (var i=0; i<items.length; i++) {
-        const modulePath = "./modules/" + items[i]
-        const module = require(modulePath)
-        module.path = modulePath
-        modules[items[i]] = module
-      }
-      return modules
-    })
+    const items = await fse.readdir(this.modulesPath)
+    for (var i=0; i<items.length; i++) {
+      const modulePath = "./modules/" + items[i]
+      const module = require(modulePath)
+      module.path = modulePath
+      modules[items[i]] = module
+    }
+    return modules
   }
 
 }
