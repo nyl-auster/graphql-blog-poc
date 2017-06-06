@@ -3,16 +3,23 @@ const graphqlHTTP = require('express-graphql')
 const mongoose = require('mongoose')
 const fse = require('fs-extra');
 const graphql = require('graphql')
-const config = require('./config.json')[process.env.NODE_ENV || 'dev'];
-console.log(config)
+const _ = require('lodash')
 
 class App {
 
   constructor() {
-    this.modulesPath = "modules"
+    this.modulesPath = 'modules'
     this.modules = []
     this.graphQLSchema = {}
     this.server = express()
+  }
+
+  config() {
+    let envConfig = {}
+    const env = process.env.NODE_ENV
+    const config = require('./config.json')
+    _.merge(envConfig, config['*'], config[env])
+    return envConfig
   }
 
   // run application
@@ -37,7 +44,6 @@ class App {
   * to create a graphQL schema
   */
   buildGraphQLSchemaFromModules(modules) {
-
     // collect query fields from modules
     let queryFields = {}
     for (const moduleId in modules) {
