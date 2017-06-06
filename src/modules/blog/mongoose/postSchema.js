@@ -1,4 +1,4 @@
-var mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 module.exports = new mongoose.Schema({
   title: { type: String, required: true },

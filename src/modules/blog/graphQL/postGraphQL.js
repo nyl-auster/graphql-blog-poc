@@ -1,19 +1,25 @@
-const graphql = require('graphql')
-const PostService = require('../services/PostService')
-const tagGraphQL = require('./tagGraphQL')
+import {
+  graphql,
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLList
+} from 'graphql'
+import PostService from '../services/PostService'
+import tagGraphQL from './tagGraphQL'
 
 /**
  * Expose graphQL types
  */
 exports.types = {
-  postType : new graphql.GraphQLObjectType({
+  postType : new GraphQLObjectType({
     name: 'Post',
     fields: {
-      id: { type: graphql.GraphQLString },
-      title: { type: graphql.GraphQLString },
-      content: { type: graphql.GraphQLString },
-      tags: { type: new graphql.GraphQLList(tagGraphQL.types.tagType) },
-      slug: { type: graphql.GraphQLString }
+      id: { type: GraphQLString },
+      title: { type: GraphQLString },
+      content: { type: GraphQLString },
+      tags: { type: new GraphQLList(tagGraphQL.types.tagType) },
+      slug: { type: GraphQLString }
     }
   })
 }
@@ -21,19 +27,19 @@ exports.types = {
 /**
  * Expose new graphQL queryFields
  */
-exports.queryFields = {
+module.exports.queryFields = {
   post: {
     type: exports.types.postType,
     description: "Return a single post by its slug",
     args: {
-      slug: { type: graphql.GraphQLString }
+      slug: { type: GraphQLString }
     },
     resolve: function (obj, {slug}) {
       return PostService.getOneById(slug)
     }
   },
   posts: {
-    type: new graphql.GraphQLList(exports.types.postType),
+    type: new GraphQLList(exports.types.postType),
     description: "Return a list of posts",
     resolve: function(obj) {
       return PostService.getAll()
