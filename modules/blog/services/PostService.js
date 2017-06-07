@@ -12,15 +12,15 @@ class PostService {
   }
 
   getAll(filters = {}) {
-    return this.model.find(filters)
+    return this.model.find(filters).lean()
   }
 
   getOneBySlug(slug) {
-    return this.model.findOne({slug: slug})
+    return this.model.findOne({slug: slug}).lean()
   }
 
   getOneById(id) {
-    return this.model.findOne({_id: id})
+    return this.model.findOne({_id: id}).lean()
   }
 
   create(values) {

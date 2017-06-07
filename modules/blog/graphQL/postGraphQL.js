@@ -6,6 +6,7 @@ const {
   GraphQLList
 } = require('graphql')
 const PostService = require('../services/PostService')
+const TagService = require('../services/TagService')
 const tagGraphQL = require('./tagGraphQL')
 
 /**
@@ -41,8 +42,15 @@ module.exports.queryFields = {
   posts: {
     type: new GraphQLList(module.exports.types.postType),
     description: "Return a list of posts",
-    resolve: function(obj) {
-      return PostService.getAll()
+    resolve: async function(obj) {
+      const posts = await PostService.getAll()
+      for (post of posts) {
+        post.tags = []
+        for (tagId of post.tagsIds) {
+          post.tags.push(await TagService.getOneById(tagId))
+        }
+      }
+      return posts
     }
   }
   /*
