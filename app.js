@@ -80,8 +80,8 @@ class App {
       rootValue: global,
       graphiql: true,
     }))
-    this.server.listen(4000);
-    console.log("Http server now listening ")
+    this.server.listen(this.config('httpServerPort'))
+    console.log("Http server is listening on port " + this.config('httpServerPort'))
   }
 
   async discoverModules(callback) {

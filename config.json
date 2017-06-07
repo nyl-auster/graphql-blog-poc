@@ -6,6 +6,7 @@
     "mongodb_uri": "mongodb://localhost/yineo"
   },
   "*": {
-    "modulesPath": "modules"
+    "modulesPath": "modules",
+    "httpServerPort": "4000"
   }
 }
