@@ -4,33 +4,33 @@
 const mongoose = require('mongoose')
 const postSchema = require('../mongoose/postSchema')
 const TagService = require('./tagService')
+const model = mongoose.model('Post', postSchema)
 
-class PostService {
-
-  constructor() {
-    this.model = mongoose.model('Post', postSchema)
-  }
+module.exports =  {
 
   getAll(filters = {}) {
-    return this.model.find(filters).lean()
-  }
+    return model.find(filters).lean()
+  },
 
   getOneBySlug(slug) {
-    return this.model.findOne({slug: slug}).lean()
-  }
+    return model.findOne({slug: slug}).lean()
+  },
 
   getOneById(id) {
-    return this.model.findOne({_id: id}).lean()
-  }
+    return model.findOne({_id: id}).lean()
+  },
+
+  // retourner la liste des posts selon un tag
+  getAllByTagId(tagId) {
+    return model.find({tagsIds: tagId}).lean()
+  },
 
   create(values) {
-    return new this.model(values).save()
-  }
+    return new model(values).save()
+  },
 
   update(document) {
-    return this.model.update(document)
+    return model.update(document)
   }
 
 }
-
-module.exports = new PostService()

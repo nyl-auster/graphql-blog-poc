@@ -8,22 +8,26 @@ const _ = require('lodash')
 class App {
 
   constructor() {
-    this.modulesPath = 'modules'
     this.modules = []
     this.graphQLSchema = {}
     this.server = express()
+    this.config = this.getConfig()
   }
 
   getTime() {
     return this.time;
   }
 
-  config(key) {
+  getConfig(key = null) {
     let envConfig = {}
+    console.log('load config from file')
     const env = process.env.NODE_ENV
-    const config = require('./config.json')
-    _.merge(envConfig, config['*'], config[env])
-    return envConfig[key]
+    const config = require("./config")
+    envConfig = config['*']
+    for (const property in config[env]) {
+      envConfig[property] = config[env][property]
+    }
+    return key ? envConfig[key] : envConfig
   }
 
   async start() {
@@ -42,7 +46,7 @@ class App {
     let queryFields = {}
     for (const moduleId in modules) {
       for (let filepath of modules[moduleId].plugins.graphQL) {
-        filepath = ['.', this.config("modulesPath"), moduleId, filepath].join('/')
+        filepath = ['.', this.config.modulesPath, moduleId, filepath].join('/')
         let schemaFragment = require(filepath)
         for (const property in schemaFragment.queryFields) {
           queryFields[property] = schemaFragment.queryFields[property]
@@ -67,7 +71,7 @@ class App {
   startDatabase() {
     console.log("connecting to mongoDB database ... ")
     mongoose.Promise = global.Promise
-    return mongoose.connect(this.config('mongodb_uri')).then(() => {
+    return mongoose.connect(this.config.mongodb_uri).then(() => {
       console.log("connected successfully to 'mongodb://localhost/yineo' ! ")
     }).catch((e) => {
       console.log(e)
@@ -80,16 +84,16 @@ class App {
       rootValue: global,
       graphiql: true,
     }))
-    this.server.listen(this.config('httpServerPort'))
-    console.log("Http server is listening on port " + this.config('httpServerPort'))
+    this.server.listen(this.config.httpServerPort)
+    console.log("Http server is listening on port " + this.config.httpServerPort)
   }
 
   async discoverModules(callback) {
     const modules = {}
-    const items = await fse.readdir(this.config("modulesPath"))
+    const items = await fse.readdir(this.config.modulesPath)
     for (var i=0; i<items.length; i++) {
-      const modulePath = "./modules/" + items[i]
-      const module = require(modulePath)
+      const modulePath = this.config.modulesPath + "/" + items[i]
+      const module = require("./" + modulePath)
       module.path = modulePath
       modules[items[i]] = module
     }

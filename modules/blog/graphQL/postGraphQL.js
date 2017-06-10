@@ -3,6 +3,7 @@ const {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
+  GraphQLInputObjectType,
   GraphQLList
 } = require('graphql')
 const PostService = require('../services/PostService')
@@ -52,20 +53,16 @@ module.exports.queryFields = {
       }
       return posts
     }
-  }
-  /*
+  },
   postsByTagId: {
-    type: new graphql.GraphQLList(exports.types.postType),
+    type: new GraphQLList(module.exports.types.postType),
     args: {
-      tagId: { type: graphql.GraphQLString }
+      tagId: { type: GraphQLString }
     },
     description: "Return a list of post for a specific tag",
-    resolve: function(obj, {tagId}) {
-      return blogService.getPostsByTagId().map(post => {
-        post.tags = blogService.getTagsByIds(post.tagsIds)
-        return post
-      })
+    resolve: async function(obj, {tagId}) {
+      return await PostService.getAllByTagId(tagId)
     }
   }
-  */
+  
 }

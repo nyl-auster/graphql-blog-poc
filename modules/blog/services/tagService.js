@@ -1,32 +1,27 @@
 const mongoose = require('mongoose')
 const postSchema = require ('../mongoose/tagSchema')
+const model = mongoose.model('Tag', postSchema)
 
-class TagService {
-
-  constructor() {
-    this.model = mongoose.model('Tag', postSchema)
-  }
+module.exports = {
 
   getAll(filters = {}) {
-    return this.model.find(filters).lean()
-  }
+    return model.find(filters).lean()
+  },
 
   getOneBySlug(slug) {
-    return this.model.findOne({slug: slug}).lean()
-  }
+    return model.findOne({slug: slug}).lean()
+  },
 
   getOneById(id) {
-    return this.model.findOne({_id: id}).lean()
-  }
+    return model.findOne({_id: id}).lean()
+  },
 
   create(values) {
-    return new this.model(values).save()
-  }
+    return new model(values).save()
+  },
 
   update(document) {
-    return this.model.update(document)
+    return model.update(document)
   }
 
 }
-
-module.exports = new TagService()
