@@ -1,5 +1,4 @@
 /**
- * Boostrap app as soon as we are connected to database
+ * Bootstrap our app
  */
-const App = require('./App')
-App.start().catch((e) => console.log(e))
+require('./App').start().catch((e) => console.log(e))
