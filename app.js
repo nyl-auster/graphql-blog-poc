@@ -11,14 +11,10 @@ class App {
     this.modules = []
     this.graphQLSchema = {}
     this.server = express()
-    this.config = this.getConfig()
+    this.config = this.parseConfig()
   }
 
-  getTime() {
-    return this.time;
-  }
-
-  getConfig(key = null) {
+  parseConfig(key = null) {
     let envConfig = {}
     console.log('load config from file')
     const env = process.env.NODE_ENV
